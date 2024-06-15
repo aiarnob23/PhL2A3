@@ -16,5 +16,7 @@ const router = express.Router();
 //router.get('/', getAllFacilities);
 
 router.post('/',validateRequest(facilityValidationSchema),facilityControllers.createFacility);
+router.put('/:id',validateRequest(facilityValidationSchema),facilityControllers.updateFacility);
+router.get('/',facilityControllers.getAllFacilities);
 
 export const facilityRoutes = router;
