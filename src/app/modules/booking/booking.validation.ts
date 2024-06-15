@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-
 export const bookingValidationSchema = z.object({
     body: z.object({
         date: z.date(),
