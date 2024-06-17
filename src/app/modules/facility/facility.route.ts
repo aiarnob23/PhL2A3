@@ -18,5 +18,6 @@ const router = express.Router();
 router.post('/',validateRequest(facilityValidationSchema),facilityControllers.createFacility);
 router.put('/:id',validateRequest(facilityValidationSchema),facilityControllers.updateFacility);
 router.get('/',facilityControllers.getAllFacilities);
+router.delete('/:id',facilityControllers.deleteFacility);
 
 export const facilityRoutes = router;
