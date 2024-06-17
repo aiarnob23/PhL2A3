@@ -33,7 +33,20 @@ const getBookings = catchAsync(
     }
 )
 
+const getAvailableTimeSlots = catchAsync(
+    async(req,res)=>{
+        const result = await bookingServices.getAvailableTimeSlots();
+        sendResponse(res,{
+            statusCode:httpStatus.OK,
+            success:true,
+            message:'Available slots',
+            data:result,
+        })
+    }
+)
+
 export const bookingControllers = {
     createBooking,
     getBookings,
+    getAvailableTimeSlots,
 }

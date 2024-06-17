@@ -10,5 +10,6 @@ const route = Router();
 route.post('/bookings', validateRequest(bookingValidationSchema), bookingControllers.createBooking);
 route.get('/bookings', authCheck.checAccess('admin'), bookingControllers.getBookings);
 route.get('/bookings/:id',authCheck.checAccess('user'), bookingControllers.getBookings);
+route.get('/booking/available',bookingControllers.getAvailableTimeSlots);
 
 export const bookingRoute = route;
