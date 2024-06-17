@@ -2,10 +2,23 @@ import httpStatus, { REQUEST_URI_TOO_LONG } from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { bookingServices } from "./booking.service";
+import { findUser, payableAmountCalculate } from "./booking.utils";
+import { TBooking } from "./booking.interface";
+import { bookingValidationSchema } from "./booking.validation";
+import validateRequest from "../../middlewares/validateRequest";
 
 
 const createBooking = catchAsync(async(req,res)=>{
-    const bookingData = await req.body;
+    const bookingData : TBooking = await req.body;
+    const token : any =  req?.headers?.authorization;
+    const userId = await findUser(token);
+    bookingData.user = userId[0]._id.toString();
+    const {startTime, endTime} = bookingData;
+    bookingData.payableAmount = await payableAmountCalculate(startTime,endTime);
+    bookingData.isBooked="confirmed";
+
+     validateRequest(bookingValidationSchema);
+
     const result = await bookingServices.createBooking(bookingData);
     sendResponse(res,{
         statusCode:httpStatus.OK,
@@ -50,3 +63,4 @@ export const bookingControllers = {
     getBookings,
     getAvailableTimeSlots,
 }
+

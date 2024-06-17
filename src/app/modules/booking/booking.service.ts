@@ -1,6 +1,8 @@
+
 import { TBooking } from "./booking.interface";
 import { bookings } from "./booking.model";
 import { calcFreeSlot } from "./booking.utils";
+
 
 const createBooking = async (payload: TBooking) => {
     const result = await bookings.create(payload);

@@ -6,6 +6,7 @@ export const createToken = (
     secret:string,
     expiresIn:string
 ) => {
-    return jwt.sign(jwtPayload, secret, {expiresIn})
+    let token= jwt.sign(jwtPayload, secret, {expiresIn})
+    return `Bearer ${token}`;
 }
 
