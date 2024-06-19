@@ -6,6 +6,8 @@ import { findUser, payableAmountCalculate } from "./booking.utils";
 import { TBooking } from "./booking.interface";
 import { bookingValidationSchema } from "./booking.validation";
 import validateRequest from "../../middlewares/validateRequest";
+import { bookings } from "./booking.model";
+import AppError from "../../errors/appErrors";
 
 
 const createBooking = catchAsync(async(req,res)=>{
@@ -16,7 +18,6 @@ const createBooking = catchAsync(async(req,res)=>{
     const {startTime, endTime} = bookingData;
     bookingData.payableAmount = await payableAmountCalculate(startTime,endTime);
     bookingData.isBooked="confirmed";
-
      validateRequest(bookingValidationSchema);
 
     const result = await bookingServices.createBooking(bookingData);
@@ -26,6 +27,27 @@ const createBooking = catchAsync(async(req,res)=>{
         message:'Booking created successfully',
         data:result,
     })
+})
+
+
+const cancelBooking = catchAsync(async(req,res)=>{
+    const bookingId : string = req.params.id;
+    const token : any = req?.headers?.authorization;
+    const userId = await findUser(token);
+    const bookedUser = await bookings.find({_id:bookingId},{user:1});
+    if(bookedUser[0].user===userId[0]._id.toString()){
+       const result = await bookingServices.deleteBooking(bookingId);
+       sendResponse(res,{
+        statusCode:httpStatus.OK,
+        success:true,
+        message:'Booking canceled',
+        data:result
+       })
+    }
+    else{
+        throw new AppError(httpStatus.FORBIDDEN, 'Forbidden Access');
+    }
+
 })
 
 const getBookings = catchAsync(
@@ -62,5 +84,6 @@ export const bookingControllers = {
     createBooking,
     getBookings,
     getAvailableTimeSlots,
+    cancelBooking,
 }
 

@@ -75,6 +75,7 @@ export const findUser = async(token: string) =>{
     return id;
 }
 
+
 export const payableAmountCalculate : any = async (startTime: any, endTime: any) =>{
 
     const payableAmount = 20 * ((timeStringToMinutes(endTime)-timeStringToMinutes(startTime))/60);

@@ -26,6 +26,7 @@ const checAccess = (DesiredRole:string) =>{
     })
 }
 
+
 export const authCheck = {
     checAccess,
 }

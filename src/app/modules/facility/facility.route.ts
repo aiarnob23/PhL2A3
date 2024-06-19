@@ -3,6 +3,7 @@ import { facilityServices } from './facility.service';
 import validateRequest from '../../middlewares/validateRequest';
 import { facilityValidationSchema } from './facility.validation';
 import { facilityControllers } from './facility.controller';
+import { bookingControllers } from '../booking/booking.controller';
 //import { createFacility, updateFacility, deleteFacility, getAllFacilities } from '../controllers/facility';
 // import { auth, isAdmin } from '../middlewares/auth';
 // import { validate } from '../middlewares/validate';
@@ -19,5 +20,4 @@ router.post('/',validateRequest(facilityValidationSchema),facilityControllers.cr
 router.put('/:id',validateRequest(facilityValidationSchema),facilityControllers.updateFacility);
 router.get('/',facilityControllers.getAllFacilities);
 router.delete('/:id',facilityControllers.deleteFacility);
-
 export const facilityRoutes = router;
