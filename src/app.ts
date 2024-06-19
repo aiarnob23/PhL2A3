@@ -14,7 +14,7 @@ app.use(cors());
 app.use('/api', generalRoutes);
 app.use('/api/auth', userRoutes, authRoutes);
 app.use('/api/facility', facilityRoutes);
-app.use('/api/booking', bookingRoute);
+app.use('/api/bookings', bookingRoute);
 
 app.get('/',(req :Request,res : Response)=>{
     res.send('Server is running...');

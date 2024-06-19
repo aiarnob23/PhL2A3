@@ -19,7 +19,7 @@ const userSchema = new Schema<TUser, UserModel>({
         select:false,
     },
     phone:{
-        type:Number,
+        type:String,
         required:true,
         unique:true,
     },

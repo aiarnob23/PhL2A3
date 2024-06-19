@@ -15,12 +15,13 @@ const updateFacility = async(id:string, payload:TFacility) =>{
 }
 
 const getAllFacilities = async()=>{
-    const result = await facility.find();
+    const result = await facility.find({isDeleted:false});
     return result;
 }
 
 const deleteFacility = async(id:string)=>{
-    const result = await facility.findByIdAndUpdate(id, {isDeleted:true} );
+    const result = await facility.findByIdAndUpdate(id, {isDeleted:true}, {new:true} );
+    console.log(result);
     return result;
 }
 

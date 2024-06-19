@@ -37,10 +37,11 @@ const refreshToken = createToken(
     config.jwt_access_expires_in as string,
 )
 
+const {password, ...userDetails} = (userData as any).toObject();
 
 return{
-    accessToken,
     refreshToken,
+   userData:userDetails,
 }   
 }
 

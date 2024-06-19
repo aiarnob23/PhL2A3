@@ -2,7 +2,7 @@ import httpStatus, { REQUEST_URI_TOO_LONG } from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { bookingServices } from "./booking.service";
-import { findUser, payableAmountCalculate } from "./booking.utils";
+import { findUser, payableAmountCalculate, bookingOverLapCheaking } from "./booking.utils";
 import { TBooking } from "./booking.interface";
 import { bookingValidationSchema } from "./booking.validation";
 import validateRequest from "../../middlewares/validateRequest";
@@ -15,18 +15,29 @@ const createBooking = catchAsync(async(req,res)=>{
     const token : any =  req?.headers?.authorization;
     const userId = await findUser(token);
     bookingData.user = userId[0]._id.toString();
-    const {startTime, endTime} = bookingData;
-    bookingData.payableAmount = await payableAmountCalculate(startTime,endTime);
-    bookingData.isBooked="confirmed";
-     validateRequest(bookingValidationSchema);
-
-    const result = await bookingServices.createBooking(bookingData);
-    sendResponse(res,{
-        statusCode:httpStatus.OK,
-        success:true,
-        message:'Booking created successfully',
-        data:result,
-    })
+    const {startTime, endTime, facility} = bookingData;
+    const overlapState = await bookingOverLapCheaking(facility, startTime, endTime);
+    if(overlapState.length){
+        sendResponse(res,{
+            statusCode:httpStatus.NOT_ACCEPTABLE,
+            success:false,
+            message:"This time slot is already taken",
+            data:null
+        })
+    }
+    
+    else{
+        bookingData.payableAmount = await payableAmountCalculate(startTime,endTime,facility);
+        bookingData.isBooked="confirmed";
+         validateRequest(bookingValidationSchema);
+        const result = await bookingServices.createBooking(bookingData);
+        sendResponse(res,{
+            statusCode:httpStatus.OK,
+            success:true,
+            message:'Booking created successfully',
+            data:result,
+        })
+    }
 })
 
 
@@ -70,11 +81,15 @@ const getBookings = catchAsync(
 
 const getAvailableTimeSlots = catchAsync(
     async(req,res)=>{
-        const result = await bookingServices.getAvailableTimeSlots();
+        let queryDate = null;
+        if(req.query.date){
+            queryDate = req.query.date;
+        }
+        const result = await bookingServices.getAvailableTimeSlots(queryDate);
         sendResponse(res,{
             statusCode:httpStatus.OK,
             success:true,
-            message:'Available slots',
+            message:'Availablility checked successfully',
             data:result,
         })
     }

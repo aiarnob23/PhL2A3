@@ -3,6 +3,8 @@ import AppError from "../../errors/appErrors";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from "../../config";
 import { User } from "../users/users.model";
+import { bookings } from "./booking.model";
+import { facility } from "../facility/facility.model";
 
 // Define the time slot type
 type TimeSlot = {
@@ -76,11 +78,17 @@ export const findUser = async(token: string) =>{
 }
 
 
-export const payableAmountCalculate : any = async (startTime: any, endTime: any) =>{
-
-    const payableAmount = 20 * ((timeStringToMinutes(endTime)-timeStringToMinutes(startTime))/60);
+export const payableAmountCalculate : any = async (startTime: any, endTime: any, id: any) =>{
+    const facilityDetail = await facility.findById(id);
+    const pricePR : any = facilityDetail?.pricePerHour;
+    const payableAmount  = pricePR * ((timeStringToMinutes(endTime)-timeStringToMinutes(startTime))/60);
     return payableAmount;
+}
 
+export const bookingOverLapCheaking = async(id : any, newBookingstartTime : String, newBookingEndingTime: String) => {
+     const facilityDetails = await bookings.find({$and:[{facility:id},{$or:[ {$and: [{endTime : {$gt:newBookingstartTime}},{startTime : {$lt:newBookingEndingTime}} ]}, {startTime:{$eq:newBookingstartTime}}]}]});
+     console.log('overlap: ', facilityDetails);
+     return facilityDetails;
 }
 
 
@@ -88,4 +96,5 @@ export const bookingUtils = {
     calcFreeSlot,
     findUser,
     payableAmountCalculate,
+    bookingOverLapCheaking,
 };

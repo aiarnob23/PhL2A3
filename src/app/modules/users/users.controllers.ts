@@ -6,14 +6,14 @@ import sendResponse from "../../utils/sendResponse";
 
 const createUser = catchAsync(async (req,res) =>{
     const userData =  req.body;
-    console.log(userData);
 
-    const result = await userServices.createUser(userData);
+    const tempResult = await userServices.createUser(userData);
+    const {password, ... result} = tempResult.toObject();
 
     sendResponse(res,{
-        statusCode:httpStatus.OK,
         success:true,
-        message:'User is created successfully',
+        statusCode:200,
+        message: "User registered successfully",
         data:result,
     })
 })
