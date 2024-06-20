@@ -3,6 +3,7 @@ import AppError from "../errors/appErrors";
 import catchAsync from "../utils/catchAsync";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../config";
+import sendResponse from "../utils/sendResponse";
 
 const checAccess = (DesiredRole:string) =>{
     return catchAsync(async(req,res,next)=>{
@@ -22,7 +23,11 @@ const checAccess = (DesiredRole:string) =>{
             next();
         }
         else{
-            throw new AppError(httpStatus.FORBIDDEN, 'Forbidden access');
+            res.json({
+                success: false,
+                statusCode: 401,
+                message:"You have no access to this route",
+           })
         }
     })
 }

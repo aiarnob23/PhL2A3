@@ -11,7 +11,7 @@ import { TBooking } from "./booking.interface";
 import { bookingValidationSchema } from "./booking.validation";
 import validateRequest from "../../middlewares/validateRequest";
 import { bookings } from "./booking.model";
-import AppError from "../../errors/appErrors";
+import {  CustomError } from "../../errors/customError";
 
 const createBooking = catchAsync(async (req, res) => {
   const bookingData: TBooking = await req.body;
@@ -55,7 +55,17 @@ const cancelBooking = catchAsync(async (req, res) => {
   const bookingId: string = req.params.id;
   const token: any = (req?.headers?.authorization)?.split(' ')[1];
   const userId = await findUser(token);
+   if (!userId.length) {
+     throw new CustomError("User not found", httpStatus.NOT_FOUND, [
+       { path: "token", message: "User not found" },
+     ]);
+   }
   const bookedUser = await bookings.find({ _id: bookingId }, { user: 1 });
+   if (!bookedUser) {
+     throw new CustomError("Booking not found", httpStatus.NOT_FOUND, [
+       { path: "bookingId", message: "Booking not found" },
+     ]);
+   }
   if (bookedUser[0].user === userId[0]._id.toString()) {
     const result = await bookingServices.deleteBooking(bookingId);
     sendResponse(res, {
@@ -65,7 +75,9 @@ const cancelBooking = catchAsync(async (req, res) => {
       data: result,
     });
   } else {
-    throw new AppError(httpStatus.FORBIDDEN, "Forbidden Access");
+    throw new CustomError("Forbidden Access", httpStatus.FORBIDDEN, [
+      { path: "bookingId", message: "Forbidden access" },
+    ]);
   }
 });
 
@@ -81,8 +93,13 @@ const getAllBookings = catchAsync(async (req, res) => {
 
 const getUserBookings = catchAsync(async (req, res) => {
   const token = req?.headers?.authorization?.split(" ")[1];
-    const id = await findUser(token || "wrongToken");
-    console.log(id);
+  const id = await findUser(token || "wrongToken");
+    if (!id.length) {
+      throw new CustomError("User not found", httpStatus.NOT_FOUND, [
+        { path: "token", message: "User not found" },
+      ]);
+    }
+
   const result = await bookingServices.getUserBookings(id[0]._id.toString());
   sendResponse(res, {
     statusCode: httpStatus.OK,
