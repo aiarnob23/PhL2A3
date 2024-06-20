@@ -7,9 +7,9 @@ const route = Router();
 
 
 
-route.post('/',bookingControllers.createBooking);
- route.get('/',bookingControllers.getBookings);
-route.get('/:id', bookingControllers.getBookings);
+route.post('/', bookingControllers.createBooking);
+route.get('/user',authCheck.checAccess('user'), bookingControllers.getUserBookings);
+route.get('/',authCheck.checAccess('admin'),bookingControllers.getAllBookings);
 route.delete('/:id',authCheck.checAccess('user'),bookingControllers.cancelBooking);    
                        
 

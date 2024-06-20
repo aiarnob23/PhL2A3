@@ -14,10 +14,12 @@ type TimeSlot = {
 
 // Define total slots
 const totalSlots : TimeSlot[] = [
-    { startTime: '10:00', endTime: '13:00' },
-    { startTime: '13:00', endTime: '16:00' },
-    { startTime: '16:00', endTime: '19:00' },
-    { startTime: '19:00', endTime: '22:00' },
+    { startTime: '08:00', endTime: '10:00' },
+    { startTime: '10:00', endTime: '12:00' },
+    { startTime: '12:00', endTime: '14:00' },
+    { startTime: '14:00', endTime: '16:00' },
+    { startTime: '16:00', endTime: '18:00' },
+    { startTime: '18:00', endTime: '20:00' },
 ];
 
 // Convert a time string to minutes since midnight for comparison
@@ -78,15 +80,20 @@ export const findUser = async(token: string) =>{
 }
 
 
-export const payableAmountCalculate : any = async (startTime: any, endTime: any, id: any) =>{
+export const payableAmountCalculate: any = async (startTime: any, endTime: any, id: any) => {
+    console.log(id);
     const facilityDetail = await facility.findById(id);
-    const pricePR : any = facilityDetail?.pricePerHour;
+    console.log(facilityDetail);
+    const pricePR: any = facilityDetail?.pricePerHour;
+    console.log(pricePR);
     const payableAmount  = pricePR * ((timeStringToMinutes(endTime)-timeStringToMinutes(startTime))/60);
     return payableAmount;
 }
 
-export const bookingOverLapCheaking = async(id : any, newBookingstartTime : String, newBookingEndingTime: String) => {
-     const facilityDetails = await bookings.find({$and:[{facility:id},{$or:[ {$and: [{endTime : {$gt:newBookingstartTime}},{startTime : {$lt:newBookingEndingTime}} ]}, {startTime:{$eq:newBookingstartTime}}]}]});
+export const bookingOverLapCheaking = async (id: any, newBookingstartTime: String, newBookingEndingTime: String, date: any) => {
+    const bookingDate = new Date(date);
+    const queryDate = bookingDate.setUTCHours(0, 0, 0, 0);
+     const facilityDetails = await bookings.find({$and:[{facility:id},{$or:[ {$and: [{endTime : {$gt:newBookingstartTime}},{startTime : {$lt:newBookingEndingTime}} ]}, {startTime:{$eq:newBookingstartTime}}]}, {date: queryDate}]});
      console.log('overlap: ', facilityDetails);
      return facilityDetails;
 }

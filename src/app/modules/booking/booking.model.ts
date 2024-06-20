@@ -1,5 +1,6 @@
-import { model, Schema } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 import { TBooking } from "./booking.interface";
+import { facility } from "../facility/facility.model";
 
 
 const bookingSchema = new Schema<TBooking>({
@@ -20,7 +21,8 @@ const bookingSchema = new Schema<TBooking>({
         required: false,
       },
       facility: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref:facility,
         required: true,
       },
       payableAmount: {
