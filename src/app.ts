@@ -1,5 +1,5 @@
 import cors from 'cors';
-import express, { Application, Request, Response, Router } from 'express';
+import express, { Application, Request, Response } from 'express';
 import { userRoutes } from './app/modules/users/users.route';
 import { facilityRoutes } from './app/modules/facility/facility.route';
 import { bookingRoute } from './app/modules/booking/booking.route';

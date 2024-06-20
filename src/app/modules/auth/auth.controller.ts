@@ -1,5 +1,4 @@
 
-import config from "../../config";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { AuthService } from "./auth.service";
@@ -9,7 +8,7 @@ const loginUser = catchAsync(async (req, res) => {
     const {userData, refreshToken} = await AuthService.loginUser(req.body);
 
     res.cookie('refreshToken', refreshToken), {
-        secure: config.NODE_ENV === 'production',
+        secure: true,
         httpOnly: true,
     }
 
