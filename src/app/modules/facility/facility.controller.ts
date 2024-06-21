@@ -20,23 +20,41 @@ const updateFacility = catchAsync(async (req, res) => {
     const id = req.params.id;
     const facility = await req.body;
     const result = await facilityServices.updateFacility(id, facility);
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "Facility updated successfully",
-        data: result,
-    })
+       if (result == null) {
+         sendResponse(res, {
+           success: false,
+           statusCode: 404,
+           message: "No Data Found",
+           data: [],
+         });
+       } else {
+         sendResponse(res, {
+           statusCode: httpStatus.OK,
+           success: true,
+           message: "Facility updated successfully",
+           data: result,
+         });
+       }
 })
 
 const deleteFacility = catchAsync(async (req, res) => {
     const result = await facilityServices.deleteFacility(req.params.id);
-
-    sendResponse(res, {
+    if (result == null) {
+         sendResponse(res, {
+           success: false,
+           statusCode: 404,
+           message: "No Data Found",
+           data: [],
+         });
+    }
+    else{
+        sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
         message: "Deleted successfully",
         data: result,
     })
+    }
 })
 
 const getAllFacilities = catchAsync(async (req, res) => {

@@ -5,12 +5,11 @@ import { facility } from "./facility.model";
 
 const createFacility = async(payload:TFacility) =>{
     const newFacility = await facility.create(payload);
-    console.log('service... ', newFacility);
     return newFacility;
 }
 
 const updateFacility = async(id:string, payload:TFacility) =>{
-    const result = await facility.findOneAndUpdate({_id:id}, payload);
+    const result = await facility.findOneAndUpdate({_id:id}, payload, {new:true});
     return result;
 }
 
@@ -20,8 +19,7 @@ const getAllFacilities = async()=>{
 }
 
 const deleteFacility = async(id:string)=>{
-    const result = await facility.findByIdAndUpdate(id, {isDeleted:true}, {new:true} );
-    console.log(result);
+    const result = await facility.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
     return result;
 }
 
