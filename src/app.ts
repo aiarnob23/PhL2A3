@@ -7,6 +7,7 @@ import { authRoutes } from './app/modules/auth/auth.route';
 import { generalRoutes } from './app/routes/generalRoutes';
 import notFound from './app/middlewares/notFound';
 import { errorHandler } from './app/middlewares/errorHandler';
+import globalErrorHandler from './app/errors/globalErrorhandler';
 
 const app:Application = express();
 
@@ -24,8 +25,7 @@ app.get('/',(req :Request,res : Response)=>{
 
 
 app.use(notFound);
-
-
+app.use(globalErrorHandler);
 app.use(errorHandler);
 
 export default app;

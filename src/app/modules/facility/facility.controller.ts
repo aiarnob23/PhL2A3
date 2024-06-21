@@ -41,6 +41,14 @@ const deleteFacility = catchAsync(async (req, res) => {
 
 const getAllFacilities = catchAsync(async (req, res) => {
     const result = await facilityServices.getAllFacilities();
+      if (!result.length) {
+        sendResponse(res, {
+          success: false,
+          statusCode: 404,
+          message: "No Data Found",
+          data: [],
+        });
+      }
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,

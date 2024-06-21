@@ -127,7 +127,6 @@ export const bookingOverLapCheaking = async (
       { date: queryDate },
     ],
   });
-  console.log("overlap: ", facilityDetails);
   return facilityDetails;
 };
 
