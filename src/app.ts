@@ -20,7 +20,7 @@ app.use('/api/facility', facilityRoutes);
 app.use('/api/bookings', bookingRoute);
 
 app.get('/',(req :Request,res : Response)=>{
-    res.send('Server is running...');
+    res.send('Sports Facility Booking Platform server is running properly');
 })
 
 
