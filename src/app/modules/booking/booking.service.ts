@@ -42,7 +42,7 @@ const getAvailableTimeSlots = async (queryDate: any) => {
 
 const deleteBooking = async (bookingId: string) => {
   await bookings.findByIdAndUpdate(bookingId, { isBooked: "canceled" });
-  const result = await bookings.findByIdAndDelete(bookingId).populate("facility");
+  const result = await bookings.findByIdAndDelete(bookingId, {new:true}).populate("facility");
   return result;
 };
 
